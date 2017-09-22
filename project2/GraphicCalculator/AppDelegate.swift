@@ -1,9 +1,9 @@
 //
 //  AppDelegate.swift
-//  GraphingCalculator
+//  GraphicCalculator
 //
-//  Created by Daniel Hauagge on 9/9/17.
-//  Copyright © 2017 CS2048 Instructor. All rights reserved.
+//  Created by Agraynel on 2017/9/9.
+//  Copyright © 2017年 Agraynel. All rights reserved.
 //
 
 import UIKit

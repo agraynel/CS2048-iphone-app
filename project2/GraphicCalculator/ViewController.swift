@@ -1,21 +1,22 @@
 //
 //  ViewController.swift
-//  GraphingCalculator
+//  GraphicCalculator
 //
-//  Created by Daniel Hauagge on 9/9/17.
-//  Copyright © 2017 CS2048 Instructor. All rights reserved.
+//  Created by Agraynel on 2017/9/9.
+//  Copyright © 2017年 Agraynel. All rights reserved.
 //
 
 import UIKit
 import JavaScriptCore
 
 class ViewController: UIViewController, UITextFieldDelegate, FunctionPlottingViewDelegate {
-    
+
     @IBOutlet weak var exprTextField: UITextField!
+    
     @IBOutlet weak var plotView: FunctionPlottingView!
-
+    
     var crosshairLoc : CGPoint?
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         exprTextField.delegate = self
@@ -24,8 +25,8 @@ class ViewController: UIViewController, UITextFieldDelegate, FunctionPlottingVie
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         print("called return")
-        exprTextField.resignFirstResponder() // <- dismisses the keyboard
-        plotView.setNeedsDisplay() // <- tells the plot view it needs to redraw
+        exprTextField.resignFirstResponder() //dismiss keyboard
+        plotView.setNeedsDisplay()//need redraw
         return false
     }
     
@@ -35,19 +36,17 @@ class ViewController: UIViewController, UITextFieldDelegate, FunctionPlottingVie
             return nil
         }
         
-        // JavaScript code we will execute
-        let jsSrc = "sin = Math.sin; cos = Math.cos; var f = function(x) { return \( expr! ); }"
-
-        // Create code and execute script, this will create the function
-        // inside the context
+        //print (expr)
+        let jsSrc = "sin = Math.sin; cos = Math.cos; tan = Math.tan; log = Math.log; var f = function(x) {return \( expr! ); }"
         let jsCtx = JSContext()!
-        jsCtx.evaluateScript(jsSrc)
+        jsCtx.evaluateScript(jsSrc);
         
-        // Get a reference to the function in the context
+        //get a reference to the function in the context
         guard let f = jsCtx.objectForKeyedSubscript("f") else {
             return nil
         }
-        // If the user input garbage and we can't evaluate, then exit
+        
+        //if input garbage we cant evaluate
         if f.isUndefined {
             return nil
         }
@@ -61,6 +60,23 @@ class ViewController: UIViewController, UITextFieldDelegate, FunctionPlottingVie
     
     @IBAction func tap(_ sender: UITapGestureRecognizer) {
         crosshairLoc = sender.location(in: plotView)
+        plotView.setNeedsDisplay()
+    }
+
+    @IBAction func press(_ sender: UILongPressGestureRecognizer) {
+        if sender.state == UIGestureRecognizerState.ended {
+            crosshairLoc = nil
+        }
+        plotView.setNeedsDisplay()
+    }
+    
+    @IBAction func pan(_ sender: UIPanGestureRecognizer) {
+        plotView.origin = sender.translation(in: plotView)
+        plotView.setNeedsDisplay()
+    }
+    
+    @IBAction func pinch(_ sender: UIPinchGestureRecognizer) {
+        plotView.newScale = sender.scale;
         plotView.setNeedsDisplay()
     }
 }
